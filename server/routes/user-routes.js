@@ -13,16 +13,11 @@ AWS.config.update({
 
 // Create the DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
+
+// Set table value to Thoughts
 const table = "Thoughts";
 
 // Retrieve users' thoughts
-router.get('/users', (req, res) => {
-  const params = {
-    TableName: table
-  };
-  // more to come . . .
-})
-
 router.get('/users', (req, res) => {
   const params = {
     TableName: table

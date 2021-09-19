@@ -14,3 +14,27 @@ AWS.config.update({
 // Create the DynamoDB service object
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const table = "Thoughts";
+
+// Retrieve users' thoughts
+router.get('/users', (req, res) => {
+  const params = {
+    TableName: table
+  };
+  // more to come . . .
+})
+
+router.get('/users', (req, res) => {
+  const params = {
+    TableName: table
+  };
+  // Scan return all items in the table
+  dynamodb.scan(params, (err, data) => {
+    if (err) {
+      res.status(500).json(err);
+    } else {
+      res.json(data.Items)
+    }
+  });
+})
+
+module.exports = router;

@@ -17,7 +17,7 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 // Set table value to Thoughts
 const table = "Thoughts";
 
-// Retrieve users' thoughts
+// GET thoughts from users
 router.get('/users', (req, res) => {
   const params = {
     TableName: table
@@ -31,5 +31,37 @@ router.get('/users', (req, res) => {
     }
   });
 })
+
+// GET thoughts from a user
+router.get('/users/:username', (req, res) => {
+  console.log(`Querying for thought(s) from ${req.params.username}.`);
+  const params = {
+    TableName: table,
+    // determines which attributes to return
+    ProjectionExpression: "#th, #ca",
+    // specifies the search criteria
+    KeyConditionExpression: "#un = :user",
+    // define aliases for attribute names
+    ExpressionAttributeNames: {
+      "#un": "username",
+      "#ca": "createdAt",
+      "#th": "thought"
+    },
+    // define aliases for attribute values
+    ExpressionAttributeValues: {
+      ":user": req.params.username
+    }
+  };
+  // Retrieve user's thoughts from the db
+  dynamodb.query(params, (err, data) => {
+    if (err) {
+      console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+      res.status(500).json(err);
+    } else {
+      console.log("Query succeeded.");
+      res.json(data.Items)
+    }
+  });
+});
 
 module.exports = router;
